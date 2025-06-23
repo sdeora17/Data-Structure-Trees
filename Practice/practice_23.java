@@ -12,31 +12,41 @@ public class practice_23 {
     node.right.right = new Node(18);
     ArrayList<Integer> inOrder = new ArrayList<>();
     ArrayList<Integer> preOrder = new ArrayList<>();
-
     inOrder(inOrder, node);
     postOrder(preOrder, node);
-
-    solution(preOrder,inOrder);
+    System.out.println(inOrder.toString());
+    System.out.println(preOrder.toString());
+    
+    Node answer = solution(preOrder,inOrder);
+    ArrayList<Integer> checkPreOrder = new ArrayList<>();
+    ArrayList<Integer> checkInOrder = new ArrayList<>();
+    inOrder(checkInOrder, answer);
+    postOrder(checkPreOrder, answer);
+    System.out.println(checkInOrder.toString());
+    System.out.println(checkPreOrder.toString());
   }
-  public static void solution(ArrayList<Integer> preOrder,ArrayList<Integer> inOrder){
+  public static Node solution(ArrayList<Integer> preOrder,ArrayList<Integer> inOrder){
     HashMap<Integer,Integer> hmap = new HashMap<>();
     for(int i = 0;i<inOrder.size();i++){
       hmap.put(inOrder.get(i),i);
     }
 
-    recursive(preOrder,0,preOrder.size()-1,inOrder,0,inOrder.size()-1,hmap);
+    return recursive(preOrder,0,preOrder.size()-1,inOrder,0,inOrder.size()-1,hmap);
 
   }
 
   public static Node recursive(ArrayList<Integer> preOrder,int preStart,int preEnd,ArrayList<Integer> inOrder, int inStart,int inEnd, HashMap<Integer,Integer> hmap){
+
+    if(inStart>inEnd || preStart > preEnd){
+      return null;
+    }
     int element = preOrder.get(preStart);
-    Node node  = new Node(element);
-    int inOrderPosition = inOrder.get(element);
+    Node node = new Node(element);
+    int inOrderPosition = hmap.get(element);
     int leftElements = inOrderPosition - inStart;
 
-    node.left = recursive(preOrder,preStart+1,preStart + leftElements,inOrder,inStart,inOrderPosition-1,hmap);
-    node.right = recursive(preOrder,preStart + leftElements + 1,preEnd,inOrder,inOrderPosition+1,inEnd,hmap);
-    
+    node.left = recursive(preOrder, preStart+1, preStart + leftElements, inOrder, inStart, inOrderPosition-1, hmap);
+    node.right = recursive(preOrder, preStart+leftElements+1, preEnd, inOrder,inOrderPosition+1,inEnd, hmap);
     return node;
   }
 
